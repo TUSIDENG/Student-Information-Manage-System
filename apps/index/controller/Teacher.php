@@ -115,23 +115,42 @@ class Teacher extends Controller
         return $html;
     }
 
+    /**
+     * 利用M层进行数据更新
+     * @param Request $request
+     * @return string
+     */
     public function update(Request $request)
     {
-        //接收数据
-        $teacher = $request->post();
-
-        //将数据存入Teacher表
-        $Teacher = new TeacherModel();
-        $message = '更新成功';
-
-        //依据状态定制提示信息
         try {
-            if ( false === $Teacher->validate(true)->isUpdate(true)->save($teacher)) {
-                $message = '更新失败：' . $Teacher->getError();
+            // 接收数据，获取要更新的关键字信息
+            $id = $request->post('id/d');
+            $message = '更新成功';
+
+            // 获取当前对象
+            $Teacher = TeacherModel::get($id);
+
+            if (is_null($Teacher)) {
+                throw new \Exception('所更新的记录不存在', 1);
+            }
+
+            // 写入要更新的数据
+            $Teacher->name = $request->post('name');
+            $Teacher->username = $request->post('username');
+            $Teacher->sex = $request->post('sex');
+            $Teacher->email = $request->post('email');
+
+            // 更新
+            // TODO: 尝试更改库代码，用模型方式进行更新
+            if (false === $Teacher->validate(true)->save($Teacher->getData())) {
+                $message = '更新失败' . $Teacher->getError();
             }
         } catch (\Exception $e) {
-            $message = '更新失败' . $e->getMessage();
+            // 由于对异常进行了处理，如果发生了错误，我们仍然需要查看具体的异常位置及信息，那么需要将以下的代码的注释去掉
+            //throw $e;
+            $message = $e->getMessage();
         }
+
 
         return $message;
     }
