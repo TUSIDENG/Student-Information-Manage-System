@@ -40,26 +40,43 @@ class Teacher extends Controller
      */
     public function insert(Request $request)
     {
-        // 接收转入数据
-        $data = $request->param();
+        //提示信息
+        $message = '';
 
-        // 实例化Teacher对象
-        $Teacher = new TeacherModel();
+        try {
+            // 接收转入数据
+            $data = $request->param();
 
-        // 为对象赋值
-        $Teacher->name = $data['name'];
-        $Teacher->username = $data['username'];
-        $Teacher->sex = $data['sex'];
-        $Teacher->email = $data['email'];
+            // 实例化Teacher对象
+            $Teacher = new TeacherModel();
 
-        $result = $Teacher->validate(true)->save($Teacher->getData());
+            // 为对象赋值
+            $Teacher->name = $data['name'];
+            $Teacher->username = $data['username'];
+            $Teacher->sex = $data['sex'];
+            $Teacher->email = $data['email'];
 
-        // 反馈结果
-        if ($result) {
-            return '新增成功。新增ID为：s' . $Teacher->id;
-        } else {
-            return $Teacher->getError();
+            $result = $Teacher->validate(true)->save($Teacher->getData());
+
+            // 反馈结果
+            if (false === $result) {
+               //验证未通过，发生错误
+                $message = '新增失败' . $Teacher->getError();
+            } else {
+                //提示操作成功，并跳转至教师管理列表
+                return $this->success('用户' . $Teacher->name . '新增成功。', url('index')); //成功跳转会返回ThinkPHP内置异常
+            }
+        } catch (\think\Exception\HttpResponseException $e) {
+            // 获取到ThinkPHP的内置异常时，直接向上抛出，交给ThinkPHP处理。
+            throw $e;
+
+        } catch (\Exception $e) {
+            // 发生异常
+            return $e->getMessage();
         }
+
+        return $this->error($message);
+
     }
 
     /**
@@ -72,26 +89,35 @@ class Teacher extends Controller
 
     public function delete(Request $request)
     {
-        $id = $request->param('id/d');
+        try {
+            $id = $request->param('id/d');
 
-        if (is_null($id) || $id === 0) {
-            return $this->error('未获取到ID信息');
+            if (is_null($id) || $id === 0) {
+                throw new \Exception('未获取到ID信息', 1);
+            }
+
+            // 获取要删除的对象
+            $Teacher = TeacherModel::get($id);
+
+            // 要删除的对象不存在
+            if (is_null($Teacher)) {
+                throw new \Exception('不存在id为' . $id . '的教师');
+            }
+
+            // 删除对象
+            if (!$Teacher->delete()) {
+                return $this->error('删除失败：' . $Teacher->getError()); // 错误跳转会返回ThinkPHP内置异常
+            }
+        } catch (\think\Exception\HttpResponseException $e) {
+            // 获取到ThinkPHP的内置异常时，直接向上抛出，交给ThinkPHP处理
+            throw $e;
+        } catch (\Exception $e) {
+            // 获取到正常的异常时，输出异常
+            return $e->getMessage();
         }
 
-        // 获取要删除的对象
-        $Teacher = TeacherModel::get($id);
 
-        // 要删除的对象不存在
-        if (is_null($Teacher)) {
-            return $this->error('不存在id为' . $id . '的教师');
-        }
-
-        // 删除对象
-        if (!$Teacher->delete()) {
-            return $this->error('删除失败：' . $Teacher->getError());
-        }
-
-        return $this->success('删除成功', url('index'));
+        return $this->success('删除成功', $request->header('referer'));
     }
 
     /**
@@ -102,17 +128,31 @@ class Teacher extends Controller
      */
     public function edit(Request $request)
     {
-        $id = $request->param('id/d');
+        try {
+            $id = $request->param('id/d');
 
-        if (is_null($Teacher = TeacherModel::get($id))) {
-            return '系统未找到' . $id . '的记录';
+            // 判断是否成功接收
+            if (is_null($id) || $id === 0) {
+                throw new \Exception('未获取到ID信息', 1);
+            }
+            if (is_null($Teacher = TeacherModel::get($id))) {
+                //由于在$this->error中抛出了异常，所以也可以省略return(不推荐）
+                $this->error('系统未找到' . $id . '的记录');
+            }
+
+            $this->assign('Teacher', $Teacher);
+
+            $html = $this->fetch();
+
+            return $html;
+        } catch (\think\Exception\HttpResponseException $e) {
+            // 获取到ThinkPHP的内置异常时，直接向上抛出，交给ThinkPHP处理
+            throw $e;
+        } catch (\Exception $e) {
+            // 获取到正常的异常时，输出异常
+            return $e->getMessage();
         }
 
-        $this->assign('Teacher', $Teacher);
-
-        $html = $this->fetch();
-
-        return $html;
     }
 
     /**
@@ -125,7 +165,11 @@ class Teacher extends Controller
         try {
             // 接收数据，获取要更新的关键字信息
             $id = $request->post('id/d');
-            $message = '更新成功';
+
+            // 判断是否成功接收
+            if (is_null($id) || $id === 0) {
+                throw new \Exception('未获取到ID信息', 1);
+            }
 
             // 获取当前对象
             $Teacher = TeacherModel::get($id);
@@ -143,15 +187,17 @@ class Teacher extends Controller
             // 更新
             // TODO: 尝试更改库代码，用模型方式进行更新
             if (false === $Teacher->validate(true)->save($Teacher->getData())) {
-                $message = '更新失败' . $Teacher->getError();
+                return $this->error('更新失败' . $Teacher->getError());
             }
+        } catch (\think\Exception\HttpResponseException $e) {
+            // 获取到ThinkPHP的内置异常时，直接向上抛出，交给ThinkPHP处理
+            throw $e;
         } catch (\Exception $e) {
             // 由于对异常进行了处理，如果发生了错误，我们仍然需要查看具体的异常位置及信息，那么需要将以下的代码的注释去掉
             //throw $e;
-            $message = $e->getMessage();
+            return $e->getMessage();
         }
 
-
-        return $message;
+        return $this->success('操作成功', url('index'));
     }
 }
