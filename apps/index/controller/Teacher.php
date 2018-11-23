@@ -21,17 +21,28 @@ class Teacher extends Controller
 {
     public function index(Request $request)
     {
-        $Teacher = new TeacherModel();
-        $teachers = $Teacher->select();
+        try {
+            $pageSize = 6; //每页显示数据条数
+            $Teacher = new TeacherModel();
 
-        // 向V层传数据
-        $this->assign('teachers', $teachers);
+            // 调用分页
+            $teachers = $Teacher->paginate($pageSize);
 
-        // 取回V层数据
-        $html = $this->fetch();
+            // 向V层传数据
+            $this->assign('teachers', $teachers);
 
-        //将数据返回给用户
-        return $html;
+            // 取回V层数据
+            $html = $this->fetch();
+
+            //将数据返回给用户
+            return $html;
+        } catch (HttpResponseException $e) {
+            // 获取到ThinkPHP的内置异常时，向上抛出交给ThinkPHP处理
+            throw $e;
+        } catch (\Exception $e) {
+            // 获取到正常异常时，输出异常
+            return $e->getMessage();
+        }
     }
 
     /**
