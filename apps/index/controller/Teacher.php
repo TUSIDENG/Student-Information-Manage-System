@@ -8,8 +8,9 @@
 namespace app\index\controller;
 
 use think\Controller;
-use app\common\model\Teacher as TeacherModel;
 use think\Request;
+use think\Exception\HttpResponseException;
+use app\common\model\Teacher as TeacherModel;
 
 /**
  * Class Teacher
@@ -66,7 +67,7 @@ class Teacher extends Controller
                 //提示操作成功，并跳转至教师管理列表
                 return $this->success('用户' . $Teacher->name . '新增成功。', url('index')); //成功跳转会返回ThinkPHP内置异常
             }
-        } catch (\think\Exception\HttpResponseException $e) {
+        } catch (HttpResponseException $e) {
             // 获取到ThinkPHP的内置异常时，直接向上抛出，交给ThinkPHP处理。
             throw $e;
 
@@ -108,7 +109,7 @@ class Teacher extends Controller
             if (!$Teacher->delete()) {
                 return $this->error('删除失败：' . $Teacher->getError()); // 错误跳转会返回ThinkPHP内置异常
             }
-        } catch (\think\Exception\HttpResponseException $e) {
+        } catch (HttpResponseException $e) {
             // 获取到ThinkPHP的内置异常时，直接向上抛出，交给ThinkPHP处理
             throw $e;
         } catch (\Exception $e) {
@@ -145,7 +146,7 @@ class Teacher extends Controller
             $html = $this->fetch();
 
             return $html;
-        } catch (\think\Exception\HttpResponseException $e) {
+        } catch (HttpResponseException $e) {
             // 获取到ThinkPHP的内置异常时，直接向上抛出，交给ThinkPHP处理
             throw $e;
         } catch (\Exception $e) {
@@ -189,7 +190,7 @@ class Teacher extends Controller
             if (false === $Teacher->validate(true)->save($Teacher->getData())) {
                 return $this->error('更新失败' . $Teacher->getError());
             }
-        } catch (\think\Exception\HttpResponseException $e) {
+        } catch (HttpResponseException $e) {
             // 获取到ThinkPHP的内置异常时，直接向上抛出，交给ThinkPHP处理
             throw $e;
         } catch (\Exception $e) {
