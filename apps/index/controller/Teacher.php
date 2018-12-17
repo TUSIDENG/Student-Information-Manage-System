@@ -19,22 +19,27 @@ use app\common\model\Teacher as TeacherModel;
  */
 class Teacher extends Controller
 {
+    /**
+     * 首页展示
+     * @param Request $request
+     * @return mixed|string
+     */
     public function index(Request $request)
     {
         try {
-            $pageSize = 6; //每页显示数据条数
+            //简单分页
+
+            // 每页显示5条数据
+            $pageSize = 5;
+
             $Teacher = new TeacherModel();
-
             // 调用分页
-            $teachers = $Teacher->paginate($pageSize);
-
+            $teachers = $Teacher->paginate(5);
             // 向V层传数据
             $this->assign('teachers', $teachers);
-
-            // 取回V层数据
+            // 取回打包后的数据
             $html = $this->fetch();
-
-            //将数据返回给用户
+            // 将数据返回给用户
             return $html;
         } catch (HttpResponseException $e) {
             // 获取到ThinkPHP的内置异常时，向上抛出交给ThinkPHP处理
