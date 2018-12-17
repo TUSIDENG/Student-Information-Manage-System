@@ -27,14 +27,26 @@ class Teacher extends Controller
     public function index(Request $request)
     {
         try {
-            //简单分页
+            // 获取查询信息
+            $name = $request->get('name');
+            trace($name);
 
             // 每页显示5条数据
             $pageSize = 5;
 
             $Teacher = new TeacherModel();
-            // 调用分页
-            $teachers = $Teacher->paginate(5);
+
+            // 定制查询信息
+            if (!empty($name)) {
+                $Teacher->where('name', 'like', '%' . $name . '%');
+            }
+
+            // 按条件查询数据，并调用分页
+            $teachers = $Teacher->paginate(5, false, [
+                'query' => [
+                    'name' => $name,
+                ],
+            ]);
             // 向V层传数据
             $this->assign('teachers', $teachers);
             // 取回打包后的数据
