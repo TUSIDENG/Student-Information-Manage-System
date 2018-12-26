@@ -34,7 +34,7 @@ return [
         'upload' => 'upload/index'
     ],
 
-    'login' => 'test/login/login',
+    'login' => 'index/login/login',
     /**
      * test模块
      */

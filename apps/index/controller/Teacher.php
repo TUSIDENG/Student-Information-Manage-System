@@ -26,40 +26,34 @@ class Teacher extends Controller
      */
     public function index(Request $request)
     {
-        try {
-            // 获取查询信息
-            $name = $request->get('name');
-            trace($name);
-
-            // 每页显示5条数据
-            $pageSize = 5;
-
-            $Teacher = new TeacherModel();
-
-            // 定制查询信息
-            if (!empty($name)) {
-                $Teacher->where('name', 'like', '%' . $name . '%');
-            }
-
-            // 按条件查询数据，并调用分页
-            $teachers = $Teacher->paginate(5, false, [
-                'query' => [
-                    'name' => $name,
-                ],
-            ]);
-            // 向V层传数据
-            $this->assign('teachers', $teachers);
-            // 取回打包后的数据
-            $html = $this->fetch();
-            // 将数据返回给用户
-            return $html;
-        } catch (HttpResponseException $e) {
-            // 获取到ThinkPHP的内置异常时，向上抛出交给ThinkPHP处理
-            throw $e;
-        } catch (\Exception $e) {
-            // 获取到正常异常时，输出异常
-            return $e->getMessage();
+        // 验证用户是否登录
+        if (!TeacherModel::isLogin()) {
+            return $this->error('plz login first', url('Login/index'));
         }
+        // 获取查询信息
+        $name = $request->get('name');
+        trace($name);
+
+        // 每页显示5条数据
+            $pageSize = 5;
+            $Teacher = new TeacherModel();
+            // 定制查询信息
+        if (!empty($name)) {
+            $Teacher->where('name', 'like', '%' . $name . '%');
+        }
+
+        // 按条件查询数据，并调用分页
+        $teachers = $Teacher->paginate(5, false, [
+            'query' => [
+                    'name' => $name,
+            ],
+        ]);
+        // 向V层传数据
+        $this->assign('teachers', $teachers);
+        // 取回打包后的数据
+        $html = $this->fetch();
+        // 将数据返回给用户
+        return $html;
     }
 
     /**
@@ -69,9 +63,6 @@ class Teacher extends Controller
      */
     public function insert(Request $request)
     {
-        //提示信息
-        $message = '';
-
         try {
             // 接收转入数据
             $data = $request->param();
