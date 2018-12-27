@@ -7,7 +7,6 @@
  */
 namespace app\index\controller;
 
-use think\Controller;
 use think\Request;
 use think\Exception\HttpResponseException;
 use app\common\model\Teacher as TeacherModel;
@@ -17,7 +16,7 @@ use app\common\model\Teacher as TeacherModel;
  * @package app\index\controller
  * 教师管理
  */
-class Teacher extends Controller
+class Teacher extends Index
 {
     /**
      * 首页展示
@@ -26,10 +25,6 @@ class Teacher extends Controller
      */
     public function index(Request $request)
     {
-        // 验证用户是否登录
-        if (!TeacherModel::isLogin()) {
-            return $this->error('plz login first', url('Login/index'));
-        }
         // 获取查询信息
         $name = $request->get('name');
         trace($name);

@@ -30,7 +30,6 @@ return [
         'addRole' => 'user/addRole',
         'deleteRole' => 'user/deleteRole',
         'readRole' => 'user/readRole',
-        'login' =>'login/index',
         'upload' => 'upload/index'
     ],
 
