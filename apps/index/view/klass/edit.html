@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑班级</title>
+</head>
+<body>
+<form action="{:url('update')}" method="POST">
+    <input type="hidden" name="id" value="{$Klass->id}">
+    <label for="name">name:</label><input type="text" name="name" id="name" value="{$Klass->name}" />
+    <label for="teacher">teacher:</label>
+    <select name="teacher_id" id="teacher">
+        {volist name="teachers" id="_Teacher"}
+        <option value="{$_Teacher->id}" {eq name="_Teacher->id" value="$Klass->teacher_id"}selected{/eq}>{$_Teacher->name}</option>
+        {/volist}
+    </select>
+    <button type="submit">submit</button>
+</form>
+</body>
+</html>
