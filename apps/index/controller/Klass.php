@@ -7,7 +7,6 @@
  */
 namespace app\index\controller;
 
-use app\index\controller\Index;
 use app\common\model\Teacher as TeacherModel;
 use app\common\model\Klass as KlassModel;
 use think\Request;
