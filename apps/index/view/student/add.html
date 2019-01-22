@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>新增</title>
+    <link href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            width: 800px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal"action="{:url('save')}" method="post">
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label">姓名:</label>
+                    <div class="col-sm-10">
+                        <input id="name" type="text" class="form-control" name="name" value="" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="num" class="col-sm-2 control-label">学号:</label>
+                    <div class="col-sm-10">
+                        <input id="num" type="text" class="form-control" name="num" value="" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">性别:</label>
+                    <div class="col-sm-offset-3">
+                        <label for="sex0" class="radio-inline">
+                            <input type="radio" name="sex" value="0" id="sex0" />
+                            男
+                        </label>
+                        <label for="sex1" class="radio-inline">
+                            <input type="radio" name="sex" value="1" id="sex1" />
+                            女
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">班级:</label>
+                    <div class="col-sm-10">
+                        <select name="klass_id" class="form-control">
+                            {volist name="Klasses" id="klass"}
+                            <option value="{$klass->id}">{$klass->name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">邮箱:</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" name="email" value="" />
+                    </div>
+                </div>
+                <div class="col-sm-offset-2"><button type="submit" class="btn btn-primary text-center">保存</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
