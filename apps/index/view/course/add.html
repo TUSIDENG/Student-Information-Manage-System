@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>新增</title>
+    <link href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <form action="{:url('save')}" method="post">
+        <label for="name">name:</label><input type="text" name="name" id="name" />
+        {volist name="klasses" id="klass"}
+        <input type="checkbox" name="klass_id[]" id="klass_id_{$klass->id}" value="{$klass->id}" />
+        <label for="klass_id_{$klass->id}">{$klass->name}</label>
+        {/volist}
+        <button type="submit">submit</button>
+    </form>
+</div>
+</body>
+</html>
