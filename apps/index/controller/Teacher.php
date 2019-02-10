@@ -52,29 +52,35 @@ class Teacher extends Index
     }
 
     /**
+     * 新增数据视图
+     */
+    public function add()
+    {
+        // 实例化
+        $Teacher = new TeacherModel();
+        // 设置默认值
+        $Teacher->id = 0;
+        $Teacher->name = '';
+        $Teacher->username = '';
+        $Teacher->sex = 0;
+        $Teacher->email = '';
+
+        $this->assign('Teacher', $Teacher);
+        return $this->fetch('edit');
+    }
+
+    /**
      * 插入新数据
      * @param Request $request
      * @return string html
      */
-    public function insert(Request $request)
+    public function save()
     {
         try {
-            // 接收转入数据
-            $data = $request->param();
-
             // 实例化Teacher对象
             $Teacher = new TeacherModel();
-
-            // 为对象赋值
-            $Teacher->name = $data['name'];
-            $Teacher->username = $data['username'];
-            $Teacher->sex = $data['sex'];
-            $Teacher->email = $data['email'];
-
-            $result = $Teacher->validate(true)->save($Teacher->getData());
-
             // 反馈结果
-            if (false === $result) {
+            if (!$this->saveTeacher($Teacher)) {
                //验证未通过，发生错误
                 $message = '新增失败' . $Teacher->getError();
             } else {
@@ -92,14 +98,6 @@ class Teacher extends Index
 
         return $this->error($message);
 
-    }
-
-    /**
-     * 新增数据视图
-     */
-    public function add()
-    {
-        return $this->fetch();
     }
 
     public function delete(Request $request)
@@ -181,11 +179,6 @@ class Teacher extends Index
             // 接收数据，获取要更新的关键字信息
             $id = $request->post('id/d');
 
-            // 判断是否成功接收
-            if (is_null($id) || $id === 0) {
-                throw new \Exception('未获取到ID信息', 1);
-            }
-
             // 获取当前对象
             $Teacher = TeacherModel::get($id);
 
@@ -193,15 +186,9 @@ class Teacher extends Index
                 throw new \Exception('所更新的记录不存在', 1);
             }
 
-            // 写入要更新的数据
-            $Teacher->name = $request->post('name');
-            $Teacher->username = $request->post('username');
-            $Teacher->sex = $request->post('sex');
-            $Teacher->email = $request->post('email');
-
             // 更新
             // TODO: 尝试更改库代码，用模型方式进行更新
-            if (false === $Teacher->validate(true)->save($Teacher->getData())) {
+            if (false === $this->saveTeacher($Teacher, true)) {
                 return $this->error('更新失败' . $Teacher->getError());
             }
         } catch (HttpResponseException $e) {
@@ -214,5 +201,24 @@ class Teacher extends Index
         }
 
         return $this->success('操作成功', url('index'));
+    }
+
+    /**
+     * 对数据进行保存或更新
+     * @param TeacherModel $Teacher
+     * @return false|int
+     */
+    private function saveTeacher(TeacherModel $Teacher, $isUpdate = false)
+    {
+        // 写入要更新的数据
+        $Teacher->name = input('post.name');
+        if (!$isUpdate) {
+            $Teacher->username = input('post.username');
+        }
+        $Teacher->sex = input('post.sex/d');
+        $Teacher->email = input('post.email');
+
+        // 更新或保存
+        return $Teacher->validate(true)->save($Teacher->getData());
     }
 }

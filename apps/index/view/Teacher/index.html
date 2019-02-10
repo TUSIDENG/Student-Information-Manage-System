@@ -1,76 +1,37 @@
-<!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>教师管理</title>
-    <link href="/static/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-    <style>
-        h1 {
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <hr>
-            <div class="row">
-                <div class="col-md-8"><h1>学生信息管理系统</h1></div>
-                <div class="col-md-4 text-right"><a href="{:url('login/logout')}" class="btn btn-primary"><i class="glyphicon glyphicon-log-out"></i>&nbsp;退出</a></div>
-            </div>
-            <hr>
-
-            <div class="row">
-                <div class="col-md-8">
-                   <form class="form-inline" action="{:url('index')}">
-                       <div class="form-group">
-                           <label class="sr-only" for="name">姓名</label>
-                           <input name="name" id="name" type="text" class="form-control" placeholder="姓名..." value="{:input('get.name')}">
-                           <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search">&nbsp;查询</i></button>
-                       </div>
-                   </form>
-                </div>
-                <div class="col-md-4 text-right">
-                    <a href="{:url('add')}" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>&nbsp;增加</a>
-                </div>
-            </div>
-
-            <hr>
-            <table class="table table-hover table-bordered">
-                <tr clsss="info">
-                    <th>序号</th>
-                    <th>姓名</th>
-                    <th>性别</th>
-                    <th>邮箱</th>
-                    <th>用户名</th>
-                    <th>create_time</th>
-                    <th>update_time</th>
-                    <th>操作</th>
-                </tr>
-                {volist name="teachers" id="_Teacher" key="key"}
-                <tr>
-                    <td>{$key}</td>
-                    <td>{$_Teacher->getData('name')}</td>
-                    <td>{eq name='_Teacher->getData("sex")' value='0'}男{else /}女{/eq}</td>
-                    <td>{$_Teacher->getData('email')}</td>
-                    <td>{$_Teacher->getData('username')}</td>
-                    <td>{$_Teacher->getData('create_time')}</td>
-                    <td>{$_Teacher->getData('update_time')}</td>
-                    <td>
-                        <a href="{:url('delete?id=' . $_Teacher->getData('id'))}" class="btn btn-danger"><i class="glyphicon glyphicon-erase"></i>&nbsp;删除</a>
-                        &nbsp;&nbsp;
-                        <a href="{:url('edit?id=' . $_Teacher->getData('id'))}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>&nbsp;编辑</a>
-                    </td>
-                </tr>
-                {/volist}
-            </table>
-            <nav>
-                {$teachers->render()}
-            </nav>
-        </div>
-    </div>
-</div>
-</body>
-</html>
+{extend name="index" /}
+{block name="title"}教师管理{/block}
+{block name="content"}
+<table class="table table-hover table-bordered">
+    <tr clsss="info">
+        <th>序号</th>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>邮箱</th>
+        <th>用户名</th>
+        <th>create_time</th>
+        <th>update_time</th>
+        <th>操作</th>
+    </tr>
+    {volist name="teachers" id="_Teacher" key="key"}
+    <tr>
+        <td>{$key}</td>
+        <td>{$_Teacher->getData('name')}</td>
+        <td>{eq name='_Teacher->getData("sex")' value='0'}男{else /}女{/eq}</td>
+        <td>{$_Teacher->getData('email')}</td>
+        <td>{$_Teacher->getData('username')}</td>
+        <td>{$_Teacher->getData('create_time')}</td>
+        <td>{$_Teacher->getData('update_time')}</td>
+        <td>
+            <a href="{:url('delete?id=' . $_Teacher->getData('id'))}" class="btn btn-danger"><i class="glyphicon glyphicon-erase"></i>&nbsp;删除</a>
+            &nbsp;&nbsp;
+            <a href="{:url('edit?id=' . $_Teacher->getData('id'))}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>&nbsp;编辑</a>
+        </td>
+    </tr>
+    {/volist}
+</table>
+{/block}
+{block name="page"}
+<nav>
+    {$teachers->render()}
+</nav>
+{/block}
