@@ -1,13 +1,14 @@
-<!DOCTYPE html>
-<html lang="zh-cn">
-<head>
-    <meta charset="UTF-8">
-    <title>编辑班级</title>
-</head>
-<body>
-<form action="{:url('update')}" method="POST">
+{extend name="edit"}
+{block name="title"}
+{eq name="Klass->id" value=""}添加班级{else /}编辑班级{/eq}
+{/block}
+{block name="content"}
+{assign name="action" value="$Request.action === 'add' ? 'save' : 'update'"}
+<form action="{:url($action)}" method="POST">
     <input type="hidden" name="id" value="{$Klass->id}">
-    <label for="name">name:</label><input type="text" name="name" id="name" value="{$Klass->name}" />
+    <label for="name">name:</label>
+    {eq name="Klass->name" value=""}
+    <input type="text" name="name" id="name" value="{$Klass->name}" />{else}{$Klass->name}{/eq}
     <label for="teacher">teacher:</label>
     <select name="teacher_id" id="teacher">
         {volist name="teachers" id="_Teacher"}
@@ -16,5 +17,4 @@
     </select>
     <button type="submit">submit</button>
 </form>
-</body>
-</html>
+{/block}

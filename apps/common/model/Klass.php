@@ -27,7 +27,7 @@ class Klass extends Model
     }
 
     /**
-     * 班级和教师，一对一关联
+     * 班级和教师，多对一关联
      * @return \think\model\relation\HasOne
      */
     public function Teacher()

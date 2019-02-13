@@ -43,4 +43,6 @@ class Login extends Controller
         }
         return $this->error('logout error', url('index'));
     }
+
+    //@TODO 待完善，教师和学生分别登录
 }
