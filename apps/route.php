@@ -14,26 +14,10 @@ return [
         'name' => '\w+',
         'id' => '\d+',
     ],
-    '[user]' => [
-        'index' => 'index/user/index',
-        'create' => 'index/user/create',
-        'add' => 'user/add',
-        'update/:id' => 'user/update',
-        'delete/:id' => 'user/delete',
-        'addList' => ['user/addList', ['method' => 'get']],
-        '[:id]' => ['user/read', ['method' => 'get'], ['id' => '\d+']],
-        'addBook' => 'user/addBook',
-        'readBook' => 'user/readBook',
-        'updateBook/:id' => 'user/updateBook',
-        'deleteBook/:id' => 'user/deleteBook',
-        //多对多关联操作
-        'addRole' => 'user/addRole',
-        'deleteRole' => 'user/deleteRole',
-        'readRole' => 'user/readRole',
-        'upload' => 'upload/index'
-    ],
-
-    'login' => 'index/login/login',
+    // 定义登录控制器路由
+    '' => ['Login/index', ['method'=>'get']],
+    'login' => ['Login/login', ['method'=>'post']],
+    'logout' => ['Login/logOut', ['method'=>'get']],
     /**
      * test模块
      */
