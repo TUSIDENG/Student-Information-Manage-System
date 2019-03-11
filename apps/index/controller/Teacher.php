@@ -29,26 +29,22 @@ class Teacher extends Index
         $name = $request->get('name');
         trace($name);
 
-        // 每页显示5条数据
-            $pageSize = 5;
-            $Teacher = new TeacherModel();
-            // 定制查询信息
+        $Teacher = new TeacherModel();
+        // 定制查询信息
         if (!empty($name)) {
             $Teacher->where('name', 'like', '%' . $name . '%');
         }
 
         // 按条件查询数据，并调用分页
-        $teachers = $Teacher->paginate(5, false, [
+        $teachers = $Teacher->paginate(null, false, [
             'query' => [
                     'name' => $name,
             ],
         ]);
         // 向V层传数据
         $this->assign('teachers', $teachers);
-        // 取回打包后的数据
-        $html = $this->fetch();
-        // 将数据返回给用户
-        return $html;
+        // 取回打包后的数据并输出
+        return $this->fetch();
     }
 
     /**

@@ -13,9 +13,24 @@ use think\Request;
 
 class Course extends Index
 {
-    public function index()
+    public function index(Request $request)
     {
+        $name = $request->get('name');
 
+        $Course = new CourseModel();
+        // 定制查询信息
+        if (!empty($name)) {
+            $Course->where('name', 'like', '%' . $name . '%');
+        }
+
+        $courses = $Course->paginate(null, false, [
+            'query' => [
+                'name' => $name
+            ],
+        ]);
+
+        $this->assign('courses', $courses);
+        return $this->fetch();
     }
 
     public function add()
@@ -92,8 +107,23 @@ class Course extends Index
             }
         }
 
-        //$this->success('更新成功', 'index');
+        $this->success('更新成功', 'index');
     }
-    //@TODO 列表页还未完成
-    //@TODO 删除功能为完成
+
+    public function delete(Request $request)
+    {
+        // 获取当前课程
+        $id = $request->param('id/d');
+        if (is_null($Course = CourseModel::get($id))) {
+            return $this->error('不存在ID为' . $id . '的记录');
+        }
+
+        if ($Course->delete()) {
+            $Course->Klasses()->detach();
+            $this->success('课程' . $Course->name . '删除成功');
+
+        } else {
+            return $this->error('删除失败' . $Course->getError());
+        }
+    }
 }

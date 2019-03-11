@@ -1,0 +1,56 @@
+{extend name="index" /}
+
+{block name="title"}学生管理{/block}
+
+{block name="search"}
+<div class="row">
+    <div class="col-md-8">
+        <form class="form-inline" action="{:url('index')}">
+            <div class="form-group">
+                <label class="sr-only" for="name">课程名</label>
+                <input name="name" id="name" type="text" class="form-control" placeholder="课程名..." value="{:input('get.name')}">
+                <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search">&nbsp;查询</i></button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 text-right">
+        <a href="{:url('add')}" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>&nbsp;增加</a>
+    </div>
+</div>
+<hr>
+{/block}
+
+{block name="content"}
+<table class="table table-hover table-bordered">
+    <tr class="info">
+        <th>序号</th>
+        <th>课程名</th>
+        <th>所属班级</th>
+        <td>创建时间</td>
+        <th>更新时间</th>
+        <th>操作</th>
+    </tr>
+    {volist name="courses" id="course" key="key"}
+    <tr>
+        <td>{$key}</td>
+        <td>{$course->getData('name')}</td>
+        <td>
+            {volist name="$course->Klasses" id="klass"}
+            <span>
+                {$klass->name}
+            </span>
+            {/volist}
+        </td>
+        <td>{$course->create_time}</td>
+        <td>{$course->update_time}</td>
+        <td><a class="btn btn-danger btn-sm" href="{:url('delete?id=' . $course->getData('id'))}"><i class="glyphicon glyphicon-trash"></i>&nbsp;删除</a>&nbsp;<a class="btn btn-sm btn-primary" href="{:url('edit?id=' . $course->getData('id'))}"><i class="glyphicon glyphicon-pencil"></i>&nbsp;编辑</a></td>
+    </tr>
+    {/volist}
+</table>
+{/block}
+
+{block name="page"}
+<nav>
+    {$courses->render()}
+</nav>
+{/block}
